@@ -1,0 +1,10 @@
+{
+  "name"             : "node-server",
+  "cwd"              : "/opt/node-B-platform",
+  "script"           : "bin/www",
+  "exec_mode"        : "cluster",
+  "instances"        : 6,
+  "error_file"       : "./node-app.stderr.log",
+  "out_file"       : "./node-app.stdout.log",
+  "env"              : {"NODE_ENV": "local"}
+}

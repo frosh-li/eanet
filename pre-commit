@@ -1,0 +1,5 @@
+cd grunt
+
+if [ -e 'Gruntfile.js' ]; then
+    grunt
+fi

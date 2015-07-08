@@ -10,6 +10,7 @@ var request = require( 'request' ); //.defaults({'http_proxy': 'http://proxy1.wa
 var mysql = require('mysql');
 var _ = require('underscore');
 var parseXlsx = require('excel');
+var SessionStore = require('express-mysql-session');
 
 
 global.pool  = mysql.createPool({
@@ -18,9 +19,17 @@ global.pool  = mysql.createPool({
   password : '',
   database : 'med'
 });
+var sessionStore = new SessionStore({
+    host: '127.0.0.1',
+    port: 3306,
+    user: 'root',
+    password: '',
+    database: 'med'
+});
 
 pool.getConnection(function(err, connection) {
     console.log('mysql 连接成功');
+    // global.sessionStore = new SessionStore({}/* session store options */, connection);
     connection.release();
 });
 var fs = require( 'fs' );
@@ -62,6 +71,7 @@ app.use( cookieParser( "node" ) );
 app.use( session( {
     secret: 'keyboard cat',
     key: 'sid',
+    store: sessionStore,
     //store: new MongoStore( { url: 'mongodb://' + mongoConfig.host + ':' + mongoConfig.port + '/node-session' } ),
     cookie: { secure: false },
     resave: false,
@@ -155,7 +165,7 @@ app.all( '*', function( req, res, next ) {
     next();
 } );
 app.use( function( req, res, next ) {
-    console.log( req.ip );
+    console.log(req.session);
     next();
 } );
 

@@ -1,8 +1,10 @@
+var md5 = require('md5').digest_s;
 module.exports = {
     router: "/user/",
     post: function( req, res, next ) {
         pool.getConnection(function(err, conn) {
             console.log('mysql 连接成功');
+            req.body.password = md5(req.body.password);
             conn.query('insert into user set ?',req.body, function(err, datas){
                 if(err){
                     return res.json({status: 500, err: err.message});

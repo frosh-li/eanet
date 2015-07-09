@@ -17,7 +17,8 @@ global.pool  = mysql.createPool({
   host     : '127.0.0.1',
   user     : 'root',
   password : '',
-  database : 'med'
+  database : 'med',
+  multipleStatements: true
 });
 var sessionStore = new SessionStore({
     host: '127.0.0.1',

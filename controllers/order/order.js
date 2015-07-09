@@ -23,16 +23,25 @@ module.exports = {
             var limit = parseInt(req.query.count) || 10;
             var page = parseInt(req.query.page) || 1;
             var start = (page-1)*limit;
+            var ordertype = parseInt(req.query.ordertype) || 0;
             var type = req.query.type || 1;
             var sql = type == 1 ? 'select count(*) as total from ordermaster where comp_id=':'select count(*) as total from ordermaster where order_status!=1 and supplie_id=';
             var sql2 = type == 1 ? 'select ordermaster.* from ordermaster where  comp_id=' : 'select ordermaster.* from ordermaster where order_status!=1 and  supplie_id=';
+            sql += req.session.comp_id;
+            sql2 += req.session.comp_id;
+            if(ordertype > 0){
+                sql += " and order_type="+ordertype;
+                sql2 += " and order_type="+ordertype;
+            }
+            console.log(sql);
+            console.log(sql2);
             pool.getConnection(function(err, conn) {
-                conn.query(sql+req.session.comp_id, function(err, ret){
+                conn.query(sql, function(err, ret){
                     if(err){
                         return res.json({status: 500, err: err.message});
                     }
 
-                    conn.query(sql2+req.session.comp_id+' limit '+start+','+limit, function(err, datas){
+                    conn.query(sql2+' limit '+start+','+limit, function(err, datas){
                         if(err){
                             return res.json({status: 500, err: err.message});
                         }

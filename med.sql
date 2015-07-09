@@ -9,7 +9,7 @@
  Target Server Version : 50625
  File Encoding         : utf-8
 
- Date: 07/07/2015 16:17:54 PM
+ Date: 07/09/2015 11:47:16 AM
 */
 
 SET NAMES utf8;
@@ -25,7 +25,14 @@ CREATE TABLE `comp_good_map` (
   `good_id` int(11) NOT NULL,
   `price` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `comp_good_map`
+-- ----------------------------
+BEGIN;
+INSERT INTO `comp_good_map` VALUES ('2', '200001', '1000003', '200'), ('3', '200001', '1000006', '20'), ('4', '200001', '1000014', '20'), ('5', '200001', '1000003', '50');
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `comp_info`
@@ -83,7 +90,7 @@ CREATE TABLE `comp_map` (
 --  Records of `comp_map`
 -- ----------------------------
 BEGIN;
-INSERT INTO `comp_map` VALUES ('200001', '100002'), ('200001', '100005'), ('200001', '100007'), ('200001', '100010');
+INSERT INTO `comp_map` VALUES ('200001', '100001'), ('200001', '100002'), ('200001', '100005'), ('200001', '100007'), ('200001', '100010');
 COMMIT;
 
 -- ----------------------------
@@ -128,22 +135,27 @@ CREATE TABLE `orderdetail` (
   `good_dw` varchar(255) DEFAULT NULL,
   `good_cp` varchar(255) DEFAULT NULL,
   `good_pzwh` varchar(255) NOT NULL,
-  `good_beizu` varchar(255) DEFAULT NULL,
-  `good_lastprice` varchar(255) DEFAULT NULL,
   `good_number` float DEFAULT NULL,
   `good_price` float DEFAULT NULL,
   `good_amount` float DEFAULT NULL,
   PRIMARY KEY (`oid`),
   KEY `FK7D606D1F4FCCF32F` (`order_id`),
   CONSTRAINT `FK7D606D1F4FCCF32F` FOREIGN KEY (`order_id`) REFERENCES `ordermaster` (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `orderdetail`
+-- ----------------------------
+BEGIN;
+INSERT INTO `orderdetail` VALUES ('1', 'D2015070810000101', '1000014', '(达喜)铝碳酸镁片', '0.5g*20片', '盒', '拜耳医药保健有限公司', '国药准字H20013410', '10', null, null), ('2', 'D2015070810000101', '1000014', '(达喜)铝碳酸镁片', '0.5g*20片', '盒', '拜耳医药保健有限公司', '国药准字H20013410', '10', null, null), ('3', 'D2015070910000102', '1000006', '(吗丁啉)多潘立酮片', '10mg*30片', '盒', '西安杨森制药有限公司', '国药准字H10910003', '10', null, null), ('4', 'D2015070910000102', '1000014', '(达喜)铝碳酸镁片', '0.5g*20片', '盒', '拜耳医药保健有限公司', '国药准字H20013410', '10', null, null);
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `ordermaster`
 -- ----------------------------
 DROP TABLE IF EXISTS `ordermaster`;
 CREATE TABLE `ordermaster` (
-  `order_id` varchar(255) NOT NULL,
+  `order_id` varchar(255) NOT NULL DEFAULT '',
   `supplie_id` int(11) DEFAULT NULL,
   `order_oper` varchar(255) DEFAULT NULL,
   `order_beizu` varchar(255) DEFAULT NULL,
@@ -157,6 +169,28 @@ CREATE TABLE `ordermaster` (
   KEY `FK8C837F309D12195B` (`comp_id`),
   CONSTRAINT `FK8C837F309D12195B` FOREIGN KEY (`comp_id`) REFERENCES `comp_info` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+delimiter ;;
+CREATE TRIGGER `auto_o_id` BEFORE INSERT ON `ordermaster` FOR EACH ROW BEGIN  
+	#D20150703100000201
+	
+	set @maxid = (select count(*) from ordermaster order by order_id desc limit 0,1);
+	
+	set @indexid = @maxid+1;
+	if @indexid < 10 THEN
+		set @indexid = concat('0',@indexid);
+	END if;
+	set new.order_id = concat("D", new.order_date, new.comp_id,@indexid);
+	#set new.id = 100;
+END;
+ ;;
+delimiter ;
+
+-- ----------------------------
+--  Records of `ordermaster`
+-- ----------------------------
+BEGIN;
+INSERT INTO `ordermaster` VALUES ('D2015070810000101', '200001', '药店员工', '订单备注', '20150708', '20170101', null, '5', '1', '100001'), ('D2015070910000102', '200001', '药店员工', 'a', '20150709', '20150901', null, '7', '2', '100001');
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `role`
@@ -177,6 +211,24 @@ INSERT INTO `role` VALUES ('1', '系统管理员', '0'), ('2', '批发企业经�
 COMMIT;
 
 -- ----------------------------
+--  Table structure for `sessions`
+-- ----------------------------
+DROP TABLE IF EXISTS `sessions`;
+CREATE TABLE `sessions` (
+  `session_id` varchar(255) COLLATE utf8_bin NOT NULL,
+  `expires` int(11) unsigned NOT NULL,
+  `data` text COLLATE utf8_bin,
+  PRIMARY KEY (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+--  Records of `sessions`
+-- ----------------------------
+BEGIN;
+INSERT INTO `sessions` VALUES ('nQnBT2nrruOoqN6_gefxgRsYTgRRRJC1', '1436425828', 0x7b22636f6f6b6965223a7b226f726967696e616c4d6178416765223a6e756c6c2c2265787069726573223a6e756c6c2c22736563757265223a66616c73652c22687474704f6e6c79223a747275652c2270617468223a222f227d2c22757365726e616d65223a2279616f6469616e222c227265616c6e616d65223a22e88dafe5ba97e59198e5b7a5222c22636f6d705f6964223a3130303030312c22726f6c655f6964223a352c22656d61696c223a226a756e67756f6c69616e67403136332e636f6d222c22726f6c655f74797065223a327d), ('xtP-dLKooXKxWQFjM235l7PnDeIcTcEF', '1436493555', 0x7b22636f6f6b6965223a7b226f726967696e616c4d6178416765223a6e756c6c2c2265787069726573223a6e756c6c2c22736563757265223a66616c73652c22687474704f6e6c79223a747275652c2270617468223a222f227d2c22757365726e616d65223a226c696a756e6c69616e67222c227265616c6e616d65223a22e69d8ee4bf8ae889af222c22636f6d705f6964223a3230303030312c22726f6c655f6964223a322c22656d61696c223a226a756e67756f6c69616e67403136332e636f6d222c22726f6c655f74797065223a317d);
+COMMIT;
+
+-- ----------------------------
 --  Table structure for `user`
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -192,13 +244,13 @@ CREATE TABLE `user` (
   `email` varchar(30) DEFAULT NULL,
   `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态，是否有效   0正常  1停用',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 --  Records of `user`
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` VALUES ('1', 'admin', '李俊良', '696a199478caac6534997382a86e25c4', '-1', '1', null, '15330066919', 'junguoliang@163.com', '0'), ('2', 'frosh', '李俊良', 'qw12as34', '-1', '1', '13581846799', '15330066919', '8082410@qq.com', '0');
+INSERT INTO `user` VALUES ('1', 'admin', '李俊良', '696a199478caac6534997382a86e25c4', '-1', '1', null, '15330066919', 'junguoliang@163.com', '0'), ('3', 'lijunliang', '李俊良', 'e10adc3949ba59abbe56e057f20f883e', '200001', '2', '15330066919', '15330066919', 'junguoliang@163.com', '0'), ('4', 'yaodian', '药店员工', 'e10adc3949ba59abbe56e057f20f883e', '100001', '5', '80808080', '15330066919', 'junguoliang@163.com', '0');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

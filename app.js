@@ -74,8 +74,7 @@ app.use( session( {
     key: 'sid',
     store: sessionStore,
     //store: new MongoStore( { url: 'mongodb://' + mongoConfig.host + ':' + mongoConfig.port + '/node-session' } ),
-    cookie: { secure: true,maxAge:3000 },
-    resave: false,
+    cookie: { secure: false,maxAge:60000*10 },//10分钟过期
     rolling:true,
     saveUninitialized: true
 } ) );

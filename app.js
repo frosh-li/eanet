@@ -5,10 +5,10 @@ var logger = require( 'morgan' );
 var cookieParser = require( 'cookie-parser' );
 var bodyParser = require( 'body-parser' );
 var session = require( 'express-session' );
-var MongoStore = require( 'connect-mongo' )( session );
-var request = require( 'request' ); //.defaults({'http_proxy': 'http://proxy1.wanda.cn:8080'});
+
 var mysql = require('mysql');
 var _ = require('underscore');
+global._ = _;
 var parseXlsx = require('excel');
 var SessionStore = require('express-mysql-session');
 
@@ -36,8 +36,6 @@ pool.getConnection(function(err, connection) {
 var fs = require( 'fs' );
 
 var EventEmitter = require( 'events' ).EventEmitter;
-
-global.mongoEmitter = new EventEmitter();
 
 var log4js = require( 'log4js' );
 log4js.configure( {

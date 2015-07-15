@@ -30,8 +30,8 @@ module.exports = {
             sql += req.session.comp_id;
             sql2 += req.session.comp_id;
             if(ordertype > 0){
-                sql += " and order_type="+ordertype;
-                sql2 += " and order_type="+ordertype;
+                sql += " and order_type="+ordertype + " order by order_id desc";
+                sql2 += " and order_type="+ordertype + " order by order_id desc";
             }
             console.log(sql);
             console.log(sql2);

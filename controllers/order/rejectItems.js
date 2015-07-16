@@ -11,13 +11,15 @@ function multi(conn, sqls, res, orderid){
             conn.release();
         });
 
+    }else{
+        conn.query(sql, function(err, ret){
+            if(err){
+                return res.json({status: 500, err: err.message});
+            }
+            multi(conn,sqls, res, orderid);
+        });
     }
-    conn.query(sql, function(err, ret){
-        if(err){
-            return res.json({status: 500, err: err.message});
-        }
-        multi(conn,sqls, res, orderid);
-    });
+
 }
 module.exports = {
     router: "/rejectItems/",
@@ -35,7 +37,6 @@ module.exports = {
         console.log(querys);
         pool.getConnection(function(err, conn) {
             multi(conn, querys, res,orderid);
-
         });
         // next();
     },

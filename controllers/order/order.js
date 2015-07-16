@@ -72,7 +72,7 @@ module.exports = {
             } );
             return;
         }
-        var sql = 'delete from comp_info where id='+code;
+        var sql = 'delete from ordermaster where order_id="'+code+'"';
         console.log(sql);
         pool.getConnection(function(err, conn) {
             conn.query(sql, function(err, datas){

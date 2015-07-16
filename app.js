@@ -72,7 +72,7 @@ app.use( session( {
     key: 'sid',
     store: sessionStore,
     //store: new MongoStore( { url: 'mongodb://' + mongoConfig.host + ':' + mongoConfig.port + '/node-session' } ),
-    cookie: { secure: false,maxAge:60000*10 },//10分钟过期
+    cookie: { secure: false,maxAge:60000*10*6*5 },//10分钟过期
     rolling:true,
     saveUninitialized: true
 } ) );

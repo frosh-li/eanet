@@ -19,7 +19,8 @@ module.exports = {
             console.log(code);
             res.json({status:600});
         } else {
-            log.info( 'api list' );
+			console.log('session');
+			console.log(req.session);
             var limit = parseInt(req.query.count) || 10;
             var page = parseInt(req.query.page) || 1;
             var start = (page-1)*limit;

@@ -20,7 +20,7 @@ module.exports = {
                 msg:'query error'
             })
         }
-        var sql = 'select * from good_info,comp_good_map  where comp_good_map.good_id=good_info.good_id and comp_good_map.comp_id='+companyid+' and good_py like "%'+q+'%" limit 0,10';
+        var sql = 'select * from good_info  where good_company='+companyid+' and good_py like "%'+q+'%" limit 0,10';
         console.log(sql);
         pool.getConnection(function(err, conn) {
             conn.query(sql, function(err, datas){

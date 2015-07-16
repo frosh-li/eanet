@@ -47,7 +47,7 @@ module.exports = {
             res.json({status:600});
         } else {
             var orderid = code;
-            var sql = "select good_id,price from comp_good_map where comp_id in (select supplie_id from ordermaster where order_id = '"+orderid+"') and good_id in (select good_id from orderdetail where order_id = '"+orderid+"');";
+            var sql = "select good_id,good_price as price from good_info where good_company in (select supplie_id from ordermaster where order_id = '"+orderid+"') and good_id in (select good_id from orderdetail where order_id = '"+orderid+"');";
             pool.getConnection(function(err, conn) {
                 conn.query(sql, function(err, ret){
                     if(err){

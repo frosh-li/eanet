@@ -15,6 +15,7 @@ module.exports = {
             }else if(req.session.role_type == 1){
                 // 批发企业
                 menus = [
+                    {url:'hot_list', val:"新品推荐"},
                     {url:'item_list', val:"药品目录"},
                     {url:'order_list/1', val:"订单管理"},
                     {url:'originOrder_list', val:"历史订单"},
@@ -23,6 +24,7 @@ module.exports = {
             }else if(req.session.role_type == 2){
                 // 药店
                 menus = [
+                    {url:'hot_list', val:"新品推荐"},
                     {url:'yd_order_list/1', val:"订单管理"},
                     {url:'originOrder_list', val:"历史订单"},
                     {url:'market_list', val:"药品市场"}

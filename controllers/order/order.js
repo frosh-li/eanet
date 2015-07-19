@@ -3,11 +3,12 @@ module.exports = {
     post: function( req, res, next ) {
         pool.getConnection(function(err, conn) {
             console.log('mysql 连接成功');
-            conn.query('select count(*) from ordermaster  where supplie_id='+req.body.supplie_id+' order_status = 1 and order_type=1 and comp_id='+req.session.comp_id, function(err,ret){
+            conn.query('select count(*) as total from ordermaster  where supplie_id='+req.body.supplie_id+' and order_status = 1 and order_type=1 and comp_id='+req.session.comp_id, function(err,ret){
                 if(err){
                     return res.json({status: 500, err: err.message});
                 }
-                if(ret && ret.length > 0){
+                console.log(ret);
+                if(ret && ret[0]['total'] > 0){
                     return res.json({status: 500, msg:'有未处理完的订单，请先处理'});
                 }
 
@@ -15,6 +16,8 @@ module.exports = {
                     if(err){
                         return res.json({status: 500, err: err.message});
                     }
+                    console.log(datas);
+                    console.log('insert order id', datas.insertId);
                     res.json({status: 200, data: datas});
                 });
                 conn.release();

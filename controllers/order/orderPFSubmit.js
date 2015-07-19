@@ -14,8 +14,10 @@ module.exports = {
 
                 var ret = datas[0];
                 var newOrderStatus;
-
-                if(ret.order_status == 6){
+                console.log('order_status', ret.order_status);
+                if(ret.order_status == 2){
+                    newOrderStatus = 8;
+                }else if(ret.order_status == 6){
                     // 6已经导出的直接订单 变成已经确认
                     newOrderStatus = 8;
                 }else if(ret.order_status == 8){

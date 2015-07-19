@@ -16,7 +16,8 @@ module.exports = {
                 // 批发企业
                 menus = [
                     {url:'item_list', val:"药品目录"},
-                    {url:'order_list/0', val:"订单管理"}
+                    {url:'order_list/0', val:"订单管理"},
+                    {url:'push_list', val:"促销管理"}
                 ];
             }else if(req.session.role_type == 2){
                 // 药店

@@ -16,32 +16,64 @@ module.exports = {
     },
     get: function( req, res, next ) {
         log.info( 'api list' );
-        var limit = parseInt(req.query.count) || 10;
-        var page = parseInt(req.query.page) || 1;
-        var start = (page-1)*limit;
-        pool.getConnection(function(err, conn) {
-            conn.query('select count(*) as total from good_info where good_company='+req.session.comp_id, function(err, ret){
-                if(err){
-                    return res.json({status: 500, err: err.message});
-                }
+        var code = req.params.id;
+        if(code){
+            pool.getConnection(function(err, conn) {
 
-                conn.query('select good_info.* from good_info where good_company='+req.session.comp_id+' order by good_id desc limit '+start+','+limit, function(err, datas){
+                conn.query('select good_info.* from good_info where good_company='+req.session.comp_id+' and good_id='+code, function(err, ret){
                     if(err){
                         return res.json({status: 500, err: err.message});
                     }
                     console.log(ret);
                     res.json({
-                        total:ret[0].total || 0,
-                        page:page,
-                        result:datas
+                        status: 200,
+                        data: ret[0]
                     });
                 });
+
+                conn.release();
+            });
+        }else{
+            var limit = parseInt(req.query.count) || 10;
+            var page = parseInt(req.query.page) || 1;
+            var start = (page-1)*limit;
+            pool.getConnection(function(err, conn) {
+                conn.query('select count(*) as total from good_info where good_company='+req.session.comp_id, function(err, ret){
+                    if(err){
+                        return res.json({status: 500, err: err.message});
+                    }
+
+                    conn.query('select good_info.* from good_info where good_company='+req.session.comp_id+' order by good_id desc limit '+start+','+limit, function(err, datas){
+                        if(err){
+                            return res.json({status: 500, err: err.message});
+                        }
+                        console.log(ret);
+                        res.json({
+                            total:ret[0].total || 0,
+                            page:page,
+                            result:datas
+                        });
+                    });
+                });
+                conn.release();
+            });
+        }
+    },
+    put: function( req, res, next ) {
+        console.log(req.body);
+        var id = req.params.id;
+        //next();
+        pool.getConnection(function(err, conn) {
+            console.log('mysql 连接成功');
+            // req.body.good_company = req.session.comp_id;
+            conn.query('update good_info set ? where good_id='+id+' and good_company='+req.session.comp_id,req.body, function(err, datas){
+                if(err){
+                    return res.json({status: 500, err: err.message});
+                }
+                res.json({status: 200, data: datas});
             });
             conn.release();
         });
-    },
-    put: function( req, res, next ) {
-        next();
     },
     delete: function( req, res, next ) {
         log.info( 'api delete' );

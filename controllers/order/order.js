@@ -3,13 +3,23 @@ module.exports = {
     post: function( req, res, next ) {
         pool.getConnection(function(err, conn) {
             console.log('mysql 连接成功');
-            conn.query('insert into ordermaster set ?',req.body, function(err, datas){
+            conn.query('select count(*) from ordermaster  where supplie_id='+req.body.supplie_id+' order_status = 1 and order_type=1 and comp_id='+req.session.comp_id, function(err,ret){
                 if(err){
                     return res.json({status: 500, err: err.message});
                 }
-                res.json({status: 200, data: datas});
+                if(ret && ret.length > 0){
+                    return res.json({status: 500, msg:'有未处理完的订单，请先处理'});
+                }
+
+                conn.query('insert into ordermaster set ?',req.body, function(err, datas){
+                    if(err){
+                        return res.json({status: 500, err: err.message});
+                    }
+                    res.json({status: 200, data: datas});
+                });
+                conn.release();
             });
-            conn.release();
+
         });
     },
     get: function( req, res, next ) {
@@ -31,9 +41,11 @@ module.exports = {
             sql += req.session.comp_id;
             sql2 += req.session.comp_id;
             if(ordertype > 0){
-                sql += " and order_type="+ordertype + " order by order_id desc";
-                sql2 += " and order_type="+ordertype + " order by order_id desc";
+                sql += " and order_type="+ordertype;
+                sql2 += " and order_type="+ordertype;
             }
+            sql += " order by order_id desc";
+            sql2 += " order by order_id desc";
             console.log(sql);
             console.log(sql2);
             pool.getConnection(function(err, conn) {

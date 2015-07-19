@@ -14,7 +14,7 @@ module.exports = {
                     return res.json({status: 500, err: err.message});
                 }
                 if(!good || good.length < 1){
-                    return res.json({status: 500, err: err.message});
+                    return res.json({status: 500, msg: err.message});
                 }
                 var cgood = good[0];
                 console.log(good);

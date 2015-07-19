@@ -17,8 +17,18 @@ module.exports = {
     get: function( req, res, next ) {
         var code = req.params.id;
         if ( code ) {
-            console.log(code);
-            res.json({status:600});
+            pool.getConnection(function(err, conn) {
+                conn.query('select user.* from user where id= '+code, function(err, datas){
+                    if(err){
+                        return res.json({status: 500, err: err.message});
+                    }
+                    res.json({
+                        status: 200,
+                        data: datas[0]
+                    });
+                });
+                conn.release();
+            });
         } else {
             pool.getConnection(function(err, conn) {
                 conn.query('select user.*, role.role_name from user, role where user.role_id = role.id limit 0,30', function(err, datas){
@@ -32,7 +42,20 @@ module.exports = {
         }
     },
     put: function( req, res, next ) {
-        next();
+        var uid = req.params.id;
+        pool.getConnection(function(err, conn) {
+            console.log('mysql 连接成功');
+            if(req.body.password)
+                req.body.password = md5(req.body.password);
+            conn.query('update user set ? where id='+uid,req.body, function(err, datas){
+                if(err){
+                    return res.json({status: 500, err: err.message});
+                }
+                res.json({status: 200, data: datas});
+            });
+            conn.release();
+        });
+        //next();
     },
     delete: function( req, res, next ) {
         log.info( 'api delete' );

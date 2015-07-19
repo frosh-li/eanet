@@ -19,7 +19,7 @@ module.exports = {
         pool.getConnection(function(err, conn) {
             console.log('mysql 连接成功');
 
-            conn.query('select user.*, role.role_type from user,role where username="'+username+'" and password="'+password+'" and user.role_id=role.id limit 0,1', function(err, datas){
+            conn.query('select user.*, role.role_type,comp_info.name as company_name from user,role,comp_info where (comp_info.id=user.comp_id or user.comp_id=-1) and username="'+username+'" and user.password="'+password+'" and user.role_id=role.id limit 0,1', function(err, datas){
                 if(err){
                     return response.json({status: 500, err: err.message});
                 }
@@ -28,14 +28,24 @@ module.exports = {
                 }
                 console.log(datas);
                 var cdata = datas[0];
+                if(cdata.status === 1){
+                    response.json({
+                        status: 500,
+                        msg:"账号已停用"
+                    });
+                }
                 //req.session
+                req.session.uid = cdata.id;
                 req.session.username = cdata.username;
                 req.session.realname = cdata.realname;
                 req.session.comp_id = cdata.comp_id;
+				req.session.company_name = cdata.company_name;
                 req.session.role_id = cdata.role_id;
                 req.session.email = cdata.email;
                 req.session.role_type = cdata.role_type;
-
+				if(cdata.comp_id == -1){
+					req.session.company_name = "";
+				}
                 console.log(req.session);
                 var ret = {
                     status: 200,

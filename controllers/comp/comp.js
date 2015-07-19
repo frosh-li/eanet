@@ -40,8 +40,9 @@ module.exports = {
                 if(!hasWhere){
                     sql += " where ";
                     sql2 += " where ";
+                    hasWhere = true;
                 }
-                whereQuery.push(" type="+parseInt(req.query.type));
+                whereQuery.push(" type="+parseInt(req.query.type)+" ");
             }
             console.log(req.query.name);
             ['id', 'name', 'pingying'].forEach(function(key){
@@ -51,12 +52,13 @@ module.exports = {
                 if(!hasWhere){
                     sql += " where ";
                     sql2 += " where ";
+                    hasWhere = true;
                 }
-                whereQuery.push(' '+key+' like "%'+decodeURIComponent(req.query[key])+'%"');
+                whereQuery.push(' '+key+' like "%'+decodeURIComponent(req.query[key])+'%" ');
             });
             if(whereQuery.length > 0){
-                sql += whereQuery.join('and');
-                sql2 += whereQuery.join('and');
+                sql += " "+whereQuery.join('and') + " ";
+                sql2 += " " +whereQuery.join('and') + " ";
             }
 
             console.log(sql, sql2);

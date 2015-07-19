@@ -16,13 +16,15 @@ module.exports = {
                 // 批发企业
                 menus = [
                     {url:'item_list', val:"药品目录"},
-                    {url:'order_list/0', val:"订单管理"},
+                    {url:'order_list/1', val:"订单管理"},
+                    {url:'originOrder_list', val:"历史订单"},
                     {url:'push_list', val:"促销管理"}
                 ];
             }else if(req.session.role_type == 2){
                 // 药店
                 menus = [
-                    {url:'yd_order_list/0', val:"订单管理"},
+                    {url:'yd_order_list/1', val:"订单管理"},
+                    {url:'originOrder_list', val:"历史订单"},
                     {url:'market_list', val:"药品市场"}
                 ];
             }

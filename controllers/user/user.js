@@ -31,7 +31,11 @@ module.exports = {
             });
         } else {
             pool.getConnection(function(err, conn) {
-                conn.query('select user.*, role.role_name from user, role where user.role_id = role.id limit 0,30', function(err, datas){
+                var sql = 'select user.*, role.role_name from user, role where user.role_id = role.id';
+                if(req.session.role_type !== 0 && req.session.isadmin === 1){
+                    sql += ' and user.comp_id='+req.session.comp_id;
+                }
+                conn.query(sql, function(err, datas){
                     if(err){
                         return res.json({status: 500, err: err.message});
                     }

@@ -43,6 +43,7 @@ module.exports = {
                 req.session.role_id = cdata.role_id;
                 req.session.email = cdata.email;
                 req.session.role_type = cdata.role_type;
+                req.session.isadmin = cdata.isadmin;
 				if(cdata.comp_id == -1){
 					req.session.company_name = "";
 				}

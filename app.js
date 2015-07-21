@@ -28,11 +28,11 @@ var sessionStore = new SessionStore({
     database: 'med'
 });
 
-pool.getConnection(function(err, connection) {
-    console.log('mysql 连接成功');
-    // global.sessionStore = new SessionStore({}/* session store options */, connection);
-    connection.release();
-});
+//pool.getConnection(function(err, connection) {
+//    console.log('mysql 连接成功');
+//    // global.sessionStore = new SessionStore({}/* session store options */, connection);
+//    connection.release();
+//});
 var fs = require( 'fs' );
 
 var EventEmitter = require( 'events' ).EventEmitter;

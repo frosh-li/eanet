@@ -21,6 +21,9 @@ module.exports = {
                     {url:'originOrder_list', val:"历史订单"},
                     {url:'push_list', val:"促销管理"}
                 ];
+                if(req.session.isadmin === 1){
+                    menus.push({url: 'user_list', val:'用户管理'});
+                }
             }else if(req.session.role_type == 2){
                 // 药店
                 menus = [
@@ -29,6 +32,9 @@ module.exports = {
                     {url:'originOrder_list', val:"历史订单"},
                     {url:'market_list', val:"药品市场"}
                 ];
+                if(req.session.isadmin === 1){
+                    menus.push({url: 'user_list', val:'用户管理'});
+                }
             }
             res.json({status: 200, data: req.session, menus: menus});
         }else{

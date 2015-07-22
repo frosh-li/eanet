@@ -54,7 +54,8 @@ module.exports = {
                     realname: req.session.realname,
                     comp_id:req.session.comp_id,
                     role_id: req.session.role_id,
-                    email: req.session.email
+                    email: req.session.email,
+                    role_type: req.session.role_type
                 };
                 response.json(ret);
             });

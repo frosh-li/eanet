@@ -34,6 +34,15 @@ module.exports = {
             }
             sqlList += ' and good_info.good_name like "%'+decodeURIComponent(req.query.good_name)+'%"';
         }
+        if(req.query.good_promotion && req.query.good_promotion == 1){
+            if(sqlCount.indexOf('where') > -1){
+                sqlCount += ' and good_info.good_promotion != ""';
+
+            }else{
+                sqlCount += ' where good_info.good_promotion != ""';
+            }
+            sqlList += ' and good_info.good_promotion != ""';
+        }
         sqlList +=(ifhot ? " and good_new = 1 ": "")+' order by good_id desc limit '+start+','+limit;
         console.log('----------------');
         console.log(sqlCount);

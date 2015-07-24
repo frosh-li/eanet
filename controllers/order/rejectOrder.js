@@ -1,7 +1,8 @@
 module.exports = {
     router: "/rejectOrder/",
     post: function( req, res, next ) {
-        var sql = 'update ordermaster set order_reject = 2 where order_reject = 1 and supplie_id='+req.session.comp_id;
+        var sql = 'update ordermaster set order_reject = 2 where order_reject = 1 and order_id="'+req.body.order_id+'" and supplie_id='+req.session.comp_id;
+        console.log(sql);
         pool.getConnection(function(err, conn) {
             conn.query(sql, function(err, ret){
                 if(err){

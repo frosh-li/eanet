@@ -38,9 +38,6 @@ module.exports = {
 
                     for(var i = 1 ; i < data.length; i++){
                         var item = data[i];
-                        if(!/^[0-9]{7}$/.test(item[0])){
-                            continue;
-                        }
                         inserts.push(
                             "('"+orderid+"'",
                             parseInt(item[0]),

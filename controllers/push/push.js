@@ -66,7 +66,12 @@ module.exports = {
         } else {
             log.info( 'api list' );
             pool.getConnection(function(err, conn) {
-                conn.query('select push.*, user.username from push, user where user.id=push.uid and push.comp_id='+req.session.comp_id+' order by create_date desc limit 0,30', function(err, datas){
+                var sql = 'select push.*, user.username from push, user where user.id=push.uid and push.comp_id='+req.session.comp_id+' order by create_date desc limit 0,30';
+                if(req.session.role_type == 2){
+                    sql = 'select push.*, user.username, comp_info.name from push, user, comp_info where comp_info.id=push.comp_id and user.id=push.uid order by create_date desc limit 0,30';
+                }
+                console.log(sql);
+                conn.query(sql, function(err, datas){
                     if(err){
                         return res.json({status: 500, err: err.message});
                     }

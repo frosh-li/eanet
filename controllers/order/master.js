@@ -3,6 +3,9 @@ module.exports = {
     post: function( req, res, next ) {
         var supplie_id = req.body.supplie_id;
         var sql = 'select * from ordermaster where order_type=1 and order_status=1 and supplie_id='+supplie_id+' and comp_id='+req.session.comp_id;
+        if(parseInt(req.body.number) < 1){
+            return res.json({status: 500, msg:'请输入正确数量'});
+        }
         pool.getConnection(function(err, conn) {
             conn.query(sql, function(err, ret){
                 if(err){
@@ -34,7 +37,7 @@ module.exports = {
                                     parseInt(req.body.good_id),
                                     parseInt(req.body.number),
                                     "(select good_price from good_info where good_id="+parseInt(req.body.good_id)+")",
-                                    0,
+                                    "(select good_price*"+parseInt(req.body.number)+" from good_info where good_id="+parseInt(req.body.good_id)+")",
                                     "(select good_name from good_info where good_id="+parseInt(req.body.good_id)+")",
                                     "(select good_gg from good_info where good_id="+parseInt(req.body.good_id)+")",
                                     "(select good_dw from good_info where good_id="+parseInt(req.body.good_id)+")",
@@ -58,31 +61,46 @@ module.exports = {
                 }else{
                     // 如果存在直接加入到订单中
                     var order_id = ret[0].order_id;
-                    var sqlInsert = "insert into orderdetail(order_id, good_id, good_number,good_price, good_amount, good_name,good_gg,good_dw, good_cp, good_pzwh) values";
-                    var insert_array = [
-                            "('"+order_id+"'",
-                            parseInt(req.body.good_id),
-                            parseInt(req.body.number),
-                            "(select good_price from good_info where good_id="+parseInt(req.body.good_id)+")",
-                            0,
-                            "(select good_name from good_info where good_id="+parseInt(req.body.good_id)+")",
-                            "(select good_gg from good_info where good_id="+parseInt(req.body.good_id)+")",
-                            "(select good_dw from good_info where good_id="+parseInt(req.body.good_id)+")",
-                            "(select good_cp from good_info where good_id="+parseInt(req.body.good_id)+")",
-                            "(select good_pzwh from good_info where good_id="+parseInt(req.body.good_id)+"))"
-                    ];
-                    conn.query(sqlInsert+insert_array.join(','), function(err, ret){
+                    conn.query('select * from orderdetail where order_id="'+order_id+'" and good_id='+parseInt(req.body.good_id), function(err, c){
                         if(err){
                             return res.json({
                                 status: 500,
                                 msg: err.message
                             });
                         }
-                        return res.json({
-                            status: 200,
-                            insertId: ret.insertId
-                        })
+                        if(c && c.length > 0){
+                            return res.json({
+                                status: 500,
+                                msg: '该药品已经在订单中已经存在，请不要重复添加'
+                            });
+                        }
+                        var sqlInsert = "insert into orderdetail(order_id, good_id, good_number,good_price, good_amount, good_name,good_gg,good_dw, good_cp, good_pzwh) values";
+                        var insert_array = [
+                                "('"+order_id+"'",
+                                parseInt(req.body.good_id),
+                                parseInt(req.body.number),
+                                "(select good_price from good_info where good_id="+parseInt(req.body.good_id)+")",
+                                "(select good_price*"+parseInt(req.body.number)+" from good_info where good_id="+parseInt(req.body.good_id)+")",
+                                "(select good_name from good_info where good_id="+parseInt(req.body.good_id)+")",
+                                "(select good_gg from good_info where good_id="+parseInt(req.body.good_id)+")",
+                                "(select good_dw from good_info where good_id="+parseInt(req.body.good_id)+")",
+                                "(select good_cp from good_info where good_id="+parseInt(req.body.good_id)+")",
+                                "(select good_pzwh from good_info where good_id="+parseInt(req.body.good_id)+"))"
+                        ];
+                        conn.query(sqlInsert+insert_array.join(','), function(err, ret){
+                            if(err){
+                                return res.json({
+                                    status: 500,
+                                    msg: err.message
+                                });
+                            }
+                            return res.json({
+                                status: 200,
+                                insertId: ret.insertId
+                            })
+                        });
                     });
+
                 }
                 conn.release();
             });

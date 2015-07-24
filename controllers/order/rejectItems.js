@@ -5,7 +5,9 @@ function multi(conn, sqls, res, orderid){
         var rejectDate = date.getFullYear()+""
                         + (date.getMonth()+1 < 10 ? ("0"+(date.getMonth()+1).toString()):(date.getMonth()+1).toString())
                         + (date.getDate() < 10 ? ("0"+(date.getDate()).toString()):(date.getDate()).toString());
-        conn.query('update ordermaster set order_lastvaiddate="'+rejectDate+'" and order_reject=1 where order_id="'+orderid+'"', function(err){
+        var csql = 'update ordermaster set order_lastvaiddate="'+rejectDate+'" , order_reject=1 where order_id="'+orderid+'"'
+        console.log('reject item ', csql);
+        conn.query(csql, function(err){
             if(err){
                 return res.json({status: 500, err: err.message});
             }

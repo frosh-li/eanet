@@ -47,11 +47,11 @@ module.exports = {
                             parseInt(item[6]) || 0,
                             parseInt(item[7]) || 0 ,
                             parseInt(item[8]) ||0,
-                            "(select good_name from good_info where good_id="+parseInt(item[0])+")",
-                            "(select good_gg from good_info where good_id="+parseInt(item[0])+")",
-                            "(select good_dw from good_info where good_id="+parseInt(item[0])+")",
-                            "(select good_cp from good_info where good_id="+parseInt(item[0])+")",
-                            "(select good_pzwh from good_info where good_id="+parseInt(item[0])+"))"
+                            "'" +item[1]+"'",
+                            "'" +item[2]+"'",
+                            "'" +item[3]+"'",
+                            "'" +item[4]+"'",
+                            "'" +item[5]+"')"
                         );
                     }
                     sql += inserts.join(',');

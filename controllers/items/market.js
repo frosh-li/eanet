@@ -25,6 +25,15 @@ module.exports = {
                 sqlList += ' and good_info.good_cat in (select id from good_cat where id in(select id from good_cat WHERE id='+catid+' or parent_id='+catid+') or parent_id in(select id from good_cat WHERE id='+catid+' or parent_id='+catid+'))';
             }
         }
+        if(req.query.good_name){
+            if(sqlCount.indexOf('where') > -1){
+                sqlCount += ' and good_info.good_name like "%'+decodeURIComponent(req.query.good_name)+'%"';
+
+            }else{
+                sqlCount += ' where good_info.good_name like "%'+decodeURIComponent(req.query.good_name)+'%"';
+            }
+            sqlList += ' and good_info.good_name like "%'+decodeURIComponent(req.query.good_name)+'%"';
+        }
         sqlList +=(ifhot ? " and good_new = 1 ": "")+' order by good_id desc limit '+start+','+limit;
         console.log('----------------');
         console.log(sqlCount);

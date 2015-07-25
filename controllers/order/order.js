@@ -45,16 +45,18 @@ module.exports = {
                 'select count(ordermaster.order_id) as total from ordermaster where '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' comp_id='
                 :
                 'select count(ordermaster.order_id) as total from ordermaster,comp_info where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and supplie_id=';
-            var sql2 = type == 1 ? 'select ordermaster.* from ordermaster where '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' comp_id=' : 'select ordermaster.* from ordermaster,comp_info where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and  supplie_id=';
+            var sql2 = type == 1 ?
+                'select ordermaster.*,comp_info.name,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from ordermaster,comp_info,orderdetail where orderdetail.order_id=ordermaster.order_id and comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' ordermaster.comp_id=' :
+                'select ordermaster.*, comp_info.name,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from ordermaster,comp_info,orderdetail where orderdetail.order_id=ordermaster.order_id and comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and  ordermaster.supplie_id=';
             sql += req.session.comp_id;
             sql2 += req.session.comp_id;
             if(ordertype > 0){
-                sql += " and order_type="+ordertype;
-                sql2 += " and order_type="+ordertype;
+                sql += " and ordermaster.order_type="+ordertype;
+                sql2 += " and ordermaster.order_type="+ordertype;
             }
             if(req.query.supplie_id){
-                sql += ' and '+(type == 0 ? 'comp_id':'supplie_id')+' like "%'+req.query.supplie_id+'%"';
-                sql2 += ' and '+(type == 0 ? 'comp_id':'supplie_id')+' like "%'+req.query.supplie_id+'%"';
+                sql += ' and '+(type == 0 ? 'ordermaster.comp_id':'supplie_id')+' like "%'+req.query.supplie_id+'%"';
+                sql2 += ' and '+(type == 0 ? 'ordermaster.comp_id':'supplie_id')+' like "%'+req.query.supplie_id+'%"';
             }
             if(req.query.supplie_name){
                 sql += ' and comp_info.name like "%'+decodeURIComponent(req.query.supplie_name)+'%"';
@@ -64,8 +66,8 @@ module.exports = {
                 sql += ' and comp_info.name like "%'+decodeURIComponent(req.query.pingying)+'%"';
                 sql2 += ' and comp_info.name like "%'+decodeURIComponent(req.query.pingying)+'%"';
             }
-            sql += " order by order_id desc";
-            sql2 += " order by order_id desc";
+            sql += " order by ordermaster.order_id desc";
+            sql2 += " group by ordermaster.order_id order by ordermaster.order_id desc";
             console.log(sql);
             console.log(sql2);
             pool.getConnection(function(err, conn) {

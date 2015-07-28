@@ -51,7 +51,7 @@ module.exports = {
                         return res.json({status: 500, err: err.message});
                     }
 
-                    conn.query('select * from orderdetail where order_id="'+order_id+'" limit '+start+','+limit, function(err, datas){
+                    conn.query('select * from orderdetail where order_id="'+order_id+'" order by good_name limit '+start+','+limit, function(err, datas){
                         if(err){
                             return res.json({status: 500, err: err.message});
                         }

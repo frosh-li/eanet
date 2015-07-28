@@ -46,8 +46,8 @@ module.exports = {
                 :
                 'select count(ordermaster.order_id) as total from ordermaster,comp_info where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and supplie_id=';
             var sql2 = type == 1 ?
-                'select ordermaster.*,comp_info.name,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from ordermaster,comp_info,orderdetail where orderdetail.order_id=ordermaster.order_id and comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' ordermaster.comp_id=' :
-                'select ordermaster.*, comp_info.name,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from ordermaster,comp_info,orderdetail where orderdetail.order_id=ordermaster.order_id and comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and  ordermaster.supplie_id=';
+                'select ordermaster.*,comp_info.name,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' ordermaster.comp_id=' :
+                'select ordermaster.*, comp_info.name,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and  ordermaster.supplie_id=';
             sql += req.session.comp_id;
             sql2 += req.session.comp_id;
             if(ordertype > 0){

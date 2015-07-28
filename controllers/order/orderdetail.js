@@ -50,8 +50,13 @@ module.exports = {
                     if(err){
                         return res.json({status: 500, err: err.message});
                     }
-
-                    conn.query('select * from orderdetail where order_id="'+order_id+'" limit '+start+','+limit, function(err, datas){
+                    var csql = 'select * from orderdetail where order_id="'+order_id+'"';
+                    if(req.query.sort == 1){
+                        csql += ' order by good_name ';
+                    }
+                    csql += ' limit '+start+','+limit;
+                    console.log(csql);
+                    conn.query(csql, function(err, datas){
                         if(err){
                             return res.json({status: 500, err: err.message});
                         }

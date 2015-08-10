@@ -10,7 +10,9 @@ module.exports = {
                     {url:'comp_list', val:"企业管理"},
                     {url:'user_list', val:"用户管理"},
                     {url:'role_list', val:"角色"},
-                    {url:'category_list', val:"分类管理"}
+                    {url:'category_list', val:"分类管理"},
+                    {url:'swiper_list', val:"轮播图"},
+                    {url:'ad_list', val:"广告管理"}
                 ];
             }else if(req.session.role_type == 1){
                 // 批发企业

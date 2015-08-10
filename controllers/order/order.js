@@ -70,26 +70,45 @@ module.exports = {
             sql2 += " group by ordermaster.order_id order by ordermaster.order_id desc";
             console.log(sql);
             console.log(sql2);
-            pool.getConnection(function(err, conn) {
-                conn.query(sql, function(err, ret){
+            new Promise(function(resolve, reject){
+                pool.getConnection(function(err, conn) {
+                    if(err){
+                        return reject(err);
+                    }
+                    resolve(conn);
+                });
+            }).then(function(conn){
+                return new Promise(function(resolve, reject){
+                    conn.query(sql, function(err, ret){
+                        if(err){
+                            // return {conn, conn, data: err};
+                            return reject(err);
+                            // return res.json({status: 500, err: err.message});
+                        }
+                        console.log(ret);
+                        resolve({conn: conn, ret: ret});
+                    });
+                });
+
+                // conn.release();
+            }).then(function(data){
+                console.log(data);
+                var conn = data.conn;
+                var ret = data.ret;
+                conn.query(sql2+' limit '+start+','+limit, function(err, datas){
                     if(err){
                         return res.json({status: 500, err: err.message});
                     }
-
-                    conn.query(sql2+' limit '+start+','+limit, function(err, datas){
-                        if(err){
-                            return res.json({status: 500, err: err.message});
-                        }
-                        console.log(ret);
-                        res.json({
-                            total:ret[0].total || 0,
-                            page:page,
-                            result:datas
-                        });
+                    console.log(ret);
+                    res.json({
+                        total:ret[0].total || 0,
+                        page:page,
+                        result:datas
                     });
                 });
                 conn.release();
             });
+
             //res.json({status:500});
         }
     },

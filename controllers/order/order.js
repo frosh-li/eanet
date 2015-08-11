@@ -40,19 +40,29 @@ module.exports = {
             var ordertype = parseInt(req.query.ordertype) || 0;
             var type = req.query.type || 1;
             var showHistory = req.query.showHistory == 0?true:false;
+            var order_status = req.query.order_status;
+            var ifreject = req.query.reject;
             console.log(req.query.showHistory, showHistory);
             var sql = type == 1 ?
                 'select count(ordermaster.order_id) as total from ordermaster where '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' comp_id='
                 :
                 'select count(ordermaster.order_id) as total from ordermaster,comp_info where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and supplie_id=';
             var sql2 = type == 1 ?
-                'select ordermaster.*,comp_info.name,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' ordermaster.comp_id=' :
-                'select ordermaster.*, comp_info.name,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and  ordermaster.supplie_id=';
+                'select ordermaster.*,comp_info.name,comp_info.shortname,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' ordermaster.comp_id=' :
+                'select ordermaster.*, comp_info.name,comp_info.shortname,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and  ordermaster.supplie_id=';
             sql += req.session.comp_id;
             sql2 += req.session.comp_id;
             if(ordertype > 0){
                 sql += " and ordermaster.order_type="+ordertype;
                 sql2 += " and ordermaster.order_type="+ordertype;
+            }
+            if(order_status > 0){
+                sql += " and ordermaster.order_status="+order_status;
+                sql2 += " and ordermaster.order_status="+order_status;
+            }
+            if(ifreject == 1){
+                sql += " and ordermaster.order_reject != 0";
+                sql2 += " and ordermaster.order_reject != 0";
             }
             if(req.query.supplie_id){
                 sql += ' and '+(type == 0 ? 'ordermaster.comp_id':'supplie_id')+' like "%'+req.query.supplie_id+'%"';

@@ -1,5 +1,5 @@
 var JPush = require('jpush-sdk');
-var client = JPush.buildClient('e0c50e1c93950a831ad76886','e8b79f3a76b0fa735c5cc475');
+var client = JPush.buildClient('1b7ee4b42a31e5897dd7ab42','384264e442cec348ebdac2a5');
 module.exports = {
     router: "/push/",
     post: function( req, res, next ) {

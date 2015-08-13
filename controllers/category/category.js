@@ -32,7 +32,7 @@ module.exports = {
                                 var level_2 = {id:_item.id, name:_item.cat_name, children:[]};
                                 ret.forEach(function(__item){
                                     if(__item.parent_id === _item.id){
-                                        level_2.children.push({id:__item.id, name:__item.cat_name});
+                                        level_2.children.push({id:__item.id, name:__item.cat_name,icon:__item.icon});
                                     }
                                 });
                                 level_1.children.push(level_2);

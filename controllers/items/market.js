@@ -26,13 +26,16 @@ module.exports = {
             }
         }
         if(req.query.good_name){
+            var decodeGoodName = decodeURIComponent(req.query.good_name)
             if(sqlCount.indexOf('where') > -1){
-                sqlCount += ' and good_info.good_name like "%'+decodeURIComponent(req.query.good_name)+'%"';
+
+
+                sqlCount += ' and good_info.good_name like "%'+decodeGoodName+'%" or good_info.good_py like "%'+decodeGoodName+'%"';
 
             }else{
-                sqlCount += ' where good_info.good_name like "%'+decodeURIComponent(req.query.good_name)+'%"';
+                sqlCount += ' where good_info.good_name like "%'+decodeGoodName+'%" or good_info.good_py like "%'+decodeGoodName+'%"';
             }
-            sqlList += ' and good_info.good_name like "%'+decodeURIComponent(req.query.good_name)+'%"';
+            sqlList += ' and good_info.good_name like "%'+decodeGoodName+'%" or good_info.good_py like "%'+decodeGoodName+'%"';
         }
         if(req.query.good_promotion && req.query.good_promotion == 1){
             if(sqlCount.indexOf('where') > -1){

@@ -7,7 +7,7 @@ module.exports = {
     get: function( req, res, next ) {
         res.json({
             'status': 200,
-            'version':'0.0.1'
+            'version':'1.0.1'
         });
     },
     put: function( req, res, next ) {

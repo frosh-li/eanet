@@ -30,16 +30,28 @@ module.exports = {
 
     },
     get: function( req, res, next ) {
+        var limit = parseInt(req.query.count) || 10;
+        var page = parseInt(req.query.page) || 1;
+        var start = (page-1)*limit;
         pool.getConnection(function(err, conn) {
-            var sql = 'select * from feedback order by id asc limit 0,100';
-            if(req.query.type == 1){
-                sql = 'select * from ad order by id asc';
-            }
-            conn.query(sql, function(err, datas){
+            conn.query('select count(*) as total from feedback', function(err, ret){
                 if(err){
                     return res.json({status: 500, err: err.message});
                 }
-                res.json(datas);
+                var csql = 'select * from feedback order by id desc';
+                csql += ' limit '+start+','+limit;
+                console.log(csql);
+                conn.query(csql, function(err, datas){
+                    if(err){
+                        return res.json({status: 500, err: err.message});
+                    }
+                    console.log(ret);
+                    res.json({
+                        total:ret[0].total || 0,
+                        page:page,
+                        result:datas
+                    });
+                });
             });
             conn.release();
         });
@@ -48,7 +60,19 @@ module.exports = {
         next();
     },
     delete: function( req, res, next ) {
-        next();
+        var id = parseInt(req.params.id);
+        if(!id){
+            return res.json({status:500, err:'param error'});
+        }
+        pool.getConnection(function(err, conn) {
+            conn.query('delete from feedback where id = '+id, function(err, ret){
+                if(err){
+                    return res.json({status: 500, err: err.message});
+                }
+                res.json({status: 200});
+            });
+            conn.release();
+        });
     },
     all: function( req, res, next ) {
         next();

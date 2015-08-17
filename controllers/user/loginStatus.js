@@ -13,7 +13,8 @@ module.exports = {
                     {url:'category_list', val:"分类管理"},
                     {url:'swiper_list', val:"轮播图"},
                     {url:'ad_list', val:"广告管理"},
-                    {url:'feedback_list', val:"意见反馈"}
+                    {url:'feedback_list', val:"意见反馈"},
+                    {url:'appVersion',val:'APP版本管理'}
                 ];
             }else if(req.session.role_type == 1){
                 // 批发企业

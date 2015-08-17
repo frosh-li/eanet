@@ -1,52 +1,46 @@
 var md5 = require('md5').digest_s;
+var fs = require('fs');
 module.exports = {
     router: "/getVersion/",
     post: function( req, res, next ) {
-        next();
+        var version = req.body.version;
+        if(!/^[0-9]+\.[0-9]+\.[0-9]+$/.test(version)){
+            return res.json({
+                status: 500,
+                msg:'参数错误',
+                version: version
+            })
+        }
+        fs.writeFile('version', version, function(err, ret){
+            if(err){
+                return res.json({
+                    status: 500,
+                    msg:'写入信息错误',
+                    version:version
+                })
+            }
+            return res.json({
+                status: 200
+            })
+        });
     },
     get: function( req, res, next ) {
-        res.json({
-            'status': 200,
-            'version':'1.0.1'
+        fs.readFile('version', function(err, data){
+            if(err){
+                return res.json({status: 500, msg:"未知错误信息"});
+            }
+            res.json({
+                'status': 200,
+                'version':data.toString()
+            });
         });
+
     },
     put: function( req, res, next ) {
-        console.log(req.body);
-        var id = req.params.id;
-        //next();
-        pool.getConnection(function(err, conn) {
-            console.log('mysql 连接成功');
-            // req.body.good_company = req.session.comp_id;
-            conn.query('update good_info set ? where good_id='+id+' and good_company='+req.session.comp_id,req.body, function(err, datas){
-                if(err){
-                    return res.json({status: 500, err: err.message});
-                }
-                res.json({status: 200, data: datas});
-            });
-            conn.release();
-        });
+        next();
     },
     delete: function( req, res, next ) {
-        log.info( 'api delete' );
-        var code = req.params.id;
-        if ( !code ) {
-            res.json( {
-                status: 500,
-                msg: "参数缺失:code"
-            } );
-            return;
-        }
-        var sql = 'delete from good_info where id='+code + " and good_company="+req.session.comp_id;
-        console.log(sql);
-        pool.getConnection(function(err, conn) {
-            conn.query(sql, function(err, datas){
-                if(err){
-                    return res.json({status: 500, err: err.message});
-                }
-                res.json({status: 200, data: datas});
-            });
-            conn.release();
-        });
+        next();
     },
     all: function( req, res, next ) {
         next();

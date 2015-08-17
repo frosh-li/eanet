@@ -18,6 +18,7 @@ module.exports = {
                     var orderdate = date.getFullYear()+""
                             + (date.getMonth()+1 < 10 ? ("0"+(date.getMonth()+1).toString()):(date.getMonth()+1).toString())
                             + (date.getDate() < 10 ? ("0"+(date.getDate()).toString()):(date.getDate()).toString());
+                    console.log(orderdate);
                     var autoInsert = "insert into ordermaster(order_oper, supplie_id, order_date, order_type, comp_id, order_status) values('"+req.session.username+"',"+supplie_id+","+orderdate+", 1,"+req.session.comp_id+",1)";
                     conn.query(autoInsert, function(err, autoResult){
                         if(err){

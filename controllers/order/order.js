@@ -44,12 +44,12 @@ module.exports = {
             var ifreject = req.query.reject;
             console.log(req.query.showHistory, showHistory);
             var sql = type == 1 ?
-                'select count(ordermaster.order_id) as total from ordermaster where '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' comp_id='
+                'select count(ordermaster.order_id) as total from ordermaster where '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status>-1 and comp_id='
                 :
-                'select count(ordermaster.order_id) as total from ordermaster,comp_info where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and supplie_id=';
+                'select count(ordermaster.order_id) as total from ordermaster,comp_info where ordermaster.order_status>-1 and comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and supplie_id=';
             var sql2 = type == 1 ?
-                'select ordermaster.*,comp_info.name,comp_info.shortname,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' ordermaster.comp_id=' :
-                'select ordermaster.*, comp_info.name,comp_info.shortname,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and  ordermaster.supplie_id=';
+                'select ordermaster.*,comp_info.name,comp_info.shortname,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where ordermaster.order_status>-1 and comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' ordermaster.comp_id=' :
+                'select ordermaster.*, comp_info.name,comp_info.shortname,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount  from comp_info,ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where ordermaster.order_status>-1 and comp_info.id=ordermaster.supplie_id and '+(showHistory?'order_status!=5 and':'order_status=5 and ' )+' order_status!=1 and  ordermaster.supplie_id=';
             sql += req.session.comp_id;
             sql2 += req.session.comp_id;
             if(ordertype > 0){
@@ -135,7 +135,7 @@ module.exports = {
             } );
             return;
         }
-        var sql = 'delete from ordermaster where order_id="'+code+'"';
+        var sql = 'update ordermaster set order_status=-1 where order_id="'+code+'"';
         console.log(sql);
         pool.getConnection(function(err, conn) {
             conn.query(sql, function(err, datas){

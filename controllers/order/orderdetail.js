@@ -8,29 +8,41 @@ module.exports = {
                 good_number: parseInt(req.body.good_number),
                 order_id : req.body.order_id
             };
-            var sql = 'select good_name,good_gg,good_dw,good_cp,good_pzwh from good_info where good_id='+good_id;
-            conn.query(sql, function(err, good){
+            conn.query('select * from orderdetail where good_id ='+good_id+" and order_id='"+req.body.order_id+"'", function(err, cdata){
                 if(err){
                     return res.json({status: 500, err: err.message});
                 }
-                if(!good || good.length < 1){
-                    return res.json({status: 500, msg: err.message});
+                if(cdata && cdata.length > 0){
+                    return res.json({
+                        status:500,
+                        err:"订单中已经存在该药品，请勿重复添加"
+                    })
                 }
-                var cgood = good[0];
-                console.log(good);
-                for(var key in cgood){
-                    data[key] = cgood[key];
-                }
-                console.log('data',data);
-                conn.query('insert into orderdetail set ?',data, function(err, datas){
+
+                var sql = 'select good_name,good_gg,good_dw,good_cp,good_pzwh from good_info where good_id='+good_id;
+                conn.query(sql, function(err, good){
                     if(err){
                         return res.json({status: 500, err: err.message});
                     }
-                    res.json({status: 200, data: datas});
+                    if(!good || good.length < 1){
+                        return res.json({status: 500, msg: err.message});
+                    }
+                    var cgood = good[0];
+                    console.log(good);
+                    for(var key in cgood){
+                        data[key] = cgood[key];
+                    }
+                    console.log('data',data);
+                    conn.query('insert into orderdetail set ?',data, function(err, datas){
+                        if(err){
+                            return res.json({status: 500, err: err.message});
+                        }
+                        res.json({status: 200, data: datas});
+                    });
                 });
-            });
 
-            conn.release();
+                conn.release();
+            });
         });
     },
     get: function( req, res, next ) {

@@ -16,7 +16,7 @@ var SessionStore = require('express-mysql-session');
 global.pool  = mysql.createPool({
   host     : '127.0.0.1',
   user     : 'root',
-  password : '',
+  password : 'yao+@)!%',
   database : 'med',
   multipleStatements: true
 });
@@ -24,7 +24,7 @@ var sessionStore = new SessionStore({
     host: '127.0.0.1',
     port: 3306,
     user: 'root',
-    password: '',
+    password: 'yao+@)!%',
     database: 'med'
 });
 

@@ -2,7 +2,6 @@ module.exports = {
     router: "/comp/",
     post: function( req, res, next ) {
         pool.getConnection(function(err, conn) {
-
             console.log('mysql 连接成功');
             conn.query('insert into comp_info set ?',req.body, function(err, datas){
                 if(err){

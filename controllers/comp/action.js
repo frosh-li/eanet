@@ -56,7 +56,29 @@ module.exports = {
         });
     },
     get: function( req, res, next ) {
-        next();
+        var id = req.params.id;
+        var key = req.query.upkey;
+        var val = req.query.upval;
+        console.log(req.query, req.params);
+        if(!id || !key || !val){
+            return res.json({status: 500, msg:'参数错误', id:id})
+        }
+        var obj = key+'="'+val+'"';
+        var sql = 'update comp_map set '+obj+' where comp_id_1='+req.session.comp_id+" and comp_id_2="+id;
+
+        console.log(sql);
+        pool.getConnection(function(err, conn) {
+            conn.query(sql, function(err, scores){
+                if(err){
+                    return res.json({status: 500, err: err.message});
+                };
+                return res.json({
+                    status: 200
+                });
+
+            })
+            conn.release();
+        });
     },
     put: function( req, res, next ) {
         next();

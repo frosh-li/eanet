@@ -79,7 +79,7 @@ module.exports = {
                 sqlCount = 'select count(*) from comp_info where type='+type+' and id in ('+insql+' and status = 1) limit '+start+','+limit;
             }else if(status == 2){
                 sqlCount = 'select count(*) from comp_info where type='+type+' and id in ('+insql+' and status = 2) limit '+start+','+limit;
-                sql = 'select * from comp_info where type='+type+' and id in ('+insql+' and status = 2) limit '+start+','+limit;
+                sql = 'select comp_info.*,comp_map.deliveryman,comp_map.salesman,comp_map.comp_id_1,comp_map.comp_id_2 from comp_info,comp_map where comp_info.id=comp_map.'+(type==2?'comp_id_1':'comp_id_2')+' and comp_info.type='+type+' and comp_info.id in ('+insql+' and status = 2) limit '+start+','+limit;
             }else{
                 return ret.json({
                     status: 500,

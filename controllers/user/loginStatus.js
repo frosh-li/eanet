@@ -15,6 +15,7 @@ module.exports = {
                     {url:'ad_list', val:"广告管理"},
                     {url:'ad_good_list', val:"药品推广"},
                     {url:'feedback_list', val:"意见反馈"},
+                    {url:'msg_config_list', val:"推送配置"},
                     {url:'appVersion',val:'APP版本管理'}
                 ];
             }else if(req.session.role_type == 1){

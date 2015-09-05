@@ -51,7 +51,21 @@ module.exports = {
         });
     },
     put: function( req, res, next ) {
-        next();
+        var id = req.params.id;
+        console.log(req.body,id);
+        pool.getConnection(function(err, conn) {
+            var sql = 'update ad set ? where id='+id;
+
+            conn.query(sql, req.body, function(err, datas){
+                if(err){
+                    return res.json({status: 500, err: err.message});
+                }
+                res.json({status: 200});
+            });
+            conn.release();
+        });
+        // return res.json({status: 200});
+        // next();
     },
     delete: function( req, res, next ) {
         next();

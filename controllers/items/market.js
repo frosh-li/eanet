@@ -11,7 +11,7 @@ module.exports = {
         var start = (page-1)*limit;
         var ifhot = req.query.hot == 1 ? true: false;
         var catid = req.query.catid;
-        var sqlCount = 'select count(*) as total from good_info'+(ifhot? " where good_new=1":"");
+        var sqlCount = 'select count(*) as total from good_info '+(ifhot? " where good_new=1":"");
 
         var sqlList = 'select good_info.*,comp_info.name as company_name from good_info,comp_info where good_info.good_company=comp_info.id '
          //sqlList +=(ifhot ? " and good_new = 1 ": "")+' order by good_id desc limit '+start+','+limit;
@@ -37,6 +37,18 @@ module.exports = {
             }
             sqlList += ' and (good_info.good_name like "%'+decodeGoodName+'%" or good_info.good_py like "%'+decodeGoodName+'%")';
         }
+
+        if(req.query.supplie_name){
+            var decodeSupplieName = decodeURIComponent(req.query.supplie_name)
+            if(sqlCount.indexOf('where') > -1){
+                sqlCount += ' and good_company in (select id from comp_info where comp_info.name like "%'+decodeSupplieName+'%")';
+
+            }else{
+                sqlCount += ' where good_company in (select id from comp_info where comp_info.name like "%'+decodeSupplieName+'%")';
+            }
+            sqlList += ' and (comp_info.name like "%'+decodeSupplieName+'%")';
+        }
+
         if(req.query.good_promotion && req.query.good_promotion == 1){
             if(sqlCount.indexOf('where') > -1){
                 sqlCount += ' and good_info.good_promotion != ""';

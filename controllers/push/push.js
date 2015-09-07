@@ -1,8 +1,21 @@
 var JPush = require('jpush-sdk');
 var client = JPush.buildClient('1b7ee4b42a31e5897dd7ab42','384264e442cec348ebdac2a5');
+var path = require('path');
+var fs = require('fs');
 module.exports = {
     router: "/push/",
     post: function( req, res, next ) {
+
+        var data = _.pick(req.body, 'type')
+            , uploadPath = path.normalize('./uploads')
+            , file = req.files.file;
+
+        console.log(file.name); //original name (ie: sunset.png)
+        console.log(file.path); //tmp path (ie: /tmp/12345-xyaz.png)
+        console.log(uploadPath); //uploads directory: (ie: /home/user/data/uploads)
+        // req.session.uploadFile = file.path;
+        console.log(req.body);
+        req.body.img = file.path;
         pool.getConnection(function(err, conn) {
             req.body.comp_id = req.session.comp_id;
             req.body.uid = req.session.uid;
@@ -114,7 +127,7 @@ module.exports = {
         } else {
             log.info( 'api list' );
             pool.getConnection(function(err, conn) {
-                var sql = 'select push.*, user.username from push, user where user.id=push.uid and push.comp_id='+req.session.comp_id+' order by create_date desc limit 0,30';
+                var sql = 'select push.*, user.username,comp_info.name from push, user,comp_info where comp_info.id=push.comp_id and  user.id=push.uid and push.comp_id='+req.session.comp_id+' order by create_date desc limit 0,30';
                 if(req.session.role_type == 2){
                     sql = 'select push.*, user.username, comp_info.name from push, user, comp_info where comp_info.id=push.comp_id and user.id=push.uid order by create_date desc limit 0,30';
                 }

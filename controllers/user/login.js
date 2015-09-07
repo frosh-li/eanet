@@ -19,7 +19,7 @@ module.exports = {
         pool.getConnection(function(err, conn) {
             console.log('mysql 连接成功');
 
-            conn.query('select user.*, role.role_type,comp_info.name as company_name from user,role,comp_info where (comp_info.id=user.comp_id or user.comp_id=-1) and username="'+username+'" and user.password="'+password+'" and user.role_id=role.id limit 0,1', function(err, datas){
+            conn.query('select user.*, role.role_type,comp_info.name as company_name, comp_info.score from user,role,comp_info where (comp_info.id=user.comp_id or user.comp_id=-1) and username="'+username+'" and user.password="'+password+'" and user.role_id=role.id limit 0,1', function(err, datas){
                 if(err){
                     return response.json({status: 500, err: err.message});
                 }
@@ -44,6 +44,8 @@ module.exports = {
                 req.session.email = cdata.email;
                 req.session.role_type = cdata.role_type;
                 req.session.isadmin = cdata.isadmin;
+                req.session.score = cdata.score;
+                req.session.cxMsg = cdata.cxMsg ? JSON.parse(cdata.cxMsg) : {};
 				if(cdata.comp_id == -1){
 					req.session.company_name = "";
 				}
@@ -55,7 +57,8 @@ module.exports = {
                     comp_id:req.session.comp_id,
                     role_id: req.session.role_id,
                     email: req.session.email,
-                    role_type: req.session.role_type
+                    role_type: req.session.role_type,
+                    cxMsg : req.session.cxMsg
                 };
                 response.json(ret);
             });

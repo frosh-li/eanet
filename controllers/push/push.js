@@ -9,11 +9,15 @@ module.exports = {
         var data = _.pick(req.body, 'type')
             , uploadPath = path.normalize('./uploads')
             , file = req.files.file;
-
-        console.log(file.name); //original name (ie: sunset.png)
-        console.log(file.path); //tmp path (ie: /tmp/12345-xyaz.png)
-        console.log(uploadPath); //uploads directory: (ie: /home/user/data/uploads)
-        // req.session.uploadFile = file.path;
+        if(file && file.name && file.path){
+            console.log(file.name); //original name (ie: sunset.png)
+            console.log(file.path); //tmp path (ie: /tmp/12345-xyaz.png)
+            console.log(uploadPath); //uploads directory: (ie: /home/user/data/uploads)
+            // req.session.uploadFile = file.path;
+        }else{
+            file = {};
+            file.path = "";
+        }
         console.log(req.body);
         req.body.img = file.path;
         pool.getConnection(function(err, conn) {

@@ -49,6 +49,19 @@ module.exports = {
             sqlList += ' and (comp_info.name like "%'+decodeSupplieName+'%")';
         }
 
+        if(req.query.supplie_id){
+            var reqSupplie_id = req.query.supplie_id;
+            if(sqlCount.indexOf('where') > -1){
+                sqlCount += ' and good_company in (select id from comp_info where comp_info.id ='+reqSupplie_id+')';
+
+            }else{
+                sqlCount += ' where good_company in (select id from comp_info where comp_info.id ='+reqSupplie_id+')';
+            }
+            sqlList += ' and (comp_info.id = '+reqSupplie_id+')';
+        }
+
+
+
         if(req.query.good_promotion && req.query.good_promotion == 1){
             if(sqlCount.indexOf('where') > -1){
                 sqlCount += ' and good_info.good_promotion != ""';

@@ -38,7 +38,7 @@ module.exports = {
             reject_reason = req.body.reject_reason.split("|");
         var orderid = req.body.orderid;
         oid.forEach(function(o, index){
-            querys.push(sql.replace('{{good_reject}}', good_reject[index]).replace('{{oid}}', o)).replace('{{reject_reason}}', reject_reason[index]);
+            querys.push(sql.replace('{{good_reject}}', good_reject[index]).replace('{{oid}}', o).replace('{{reject_reason}}', reject_reason[index]));
         });
 
         console.log(querys);

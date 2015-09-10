@@ -69,16 +69,16 @@ module.exports = {
                                     :
                                     'select comp_id_2 as id from comp_map where comp_id_1='+companyid;
             if(status == -1){
-                sqlCount = 'select count(*) as total from comp_info where type='+type+' and id not in ('+insql+') limit '+start+','+limit;
+                sqlCount = 'select count(*) as total from comp_info where type='+type+' and id not in ('+insql+')';
                 sql= 'select * from comp_info where type='+type+' and id not in ('+insql+') limit '+start+','+limit;
             }else if(status == 0){
-                sqlCount = 'select count(*) as total from comp_info where type='+type+' and id in ('+insql+' and status = 0) limit '+start+','+limit;
+                sqlCount = 'select count(*) as total from comp_info where type='+type+' and id in ('+insql+' and status = 0)';
                 sql = 'select * from comp_info where type='+type+' and id in ('+insql+' and status = 0) limit '+start+','+limit;
             }else if(status == 1){
                 sql = 'select * from comp_info where type='+type+' and id in ('+insql+' and status = 1) limit '+start+','+limit;
-                sqlCount = 'select count(*) as total from comp_info where type='+type+' and id in ('+insql+' and status = 1) limit '+start+','+limit;
+                sqlCount = 'select count(*) as total from comp_info where type='+type+' and id in ('+insql+' and status = 1)';
             }else if(status == 2){
-                sqlCount = 'select count(*) as total from comp_info where type='+type+' and id in ('+insql+' and status = 2) limit '+start+','+limit;
+                sqlCount = 'select count(*) as total from comp_info where type='+type+' and id in ('+insql+' and status = 2) ';
                 sql = 'select comp_info.*,comp_map.deliveryman,comp_map.salesman,comp_map.comp_id_1,comp_map.comp_id_2 from comp_info,comp_map where comp_info.id=comp_map.'+(type==2?'comp_id_1':'comp_id_2')+' and comp_map.'+(type==2?'comp_id_2':'comp_id_1')+'='+req.session.comp_id+' and comp_info.type='+type+' and comp_info.id in ('+insql+' and status = 2) limit '+start+','+limit;
             }else{
                 return ret.json({

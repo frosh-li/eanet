@@ -27,7 +27,7 @@ module.exports = {
             var type = req.query.type || "comp_id";
             var sql = 'select count(*) as total from ordermaster where order_reject != 0 and ';
             sql += type+'=';
-            var sql2 = 'select d.*, c.itemcount ,c.good_amount as total_amount from (select ordermaster.*,comp_info.name  from comp_info,ordermaster where order_reject != 0 and comp_info.id = ordermaster.supplie_id and ';
+            var sql2 = 'select d.*, c.itemcount ,c.good_amount as total_amount from (select ordermaster.*,comp_info.name  from comp_info,ordermaster where order_reject != 0 and comp_info.id = ordermaster.'+(req.session.role_type==2?'supplie_id':'comp_id')+' and ';
 
             //'select ordermaster.*,comp_info.name,count(orderdetail.oid) as itemcount ,SUM(orderdetail.good_amount) as total_amount from comp_info, ordermaster left join orderdetail on orderdetail.order_id=ordermaster.order_id where comp_info.id=ordermaster.supplie_id and ordermaster.order_reject != 0 and ';
             sql2 += "ordermaster."+type + '=';

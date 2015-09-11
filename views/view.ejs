@@ -13,6 +13,7 @@
 			table {
 				border-collapse: collapse;
 				border-spacing: 0;
+				width:950px;
 			}
 	        td {
 	            padding: 8px;
@@ -43,7 +44,13 @@
 	        	margin:10px auto;
 	        	text-decoration: none;
 	        }
+	        .noborder{
+	        	border:none;
+	        }
+	        .noborder td{
+	        	border:none;
 
+	        }
 	    </style>
 	    <style media="print">
 			a{display:none;}
@@ -68,7 +75,7 @@
 		%>
 		<a href="javascript:///" onclick="window.print()">打印</a>
 		<!--startprint-->
-		<% result.forEach(function(order){ %>
+		<% result.forEach(function(order,index){ %>
 
 		<div>
 		<h1>售后退回验收通知单</h1>
@@ -119,6 +126,15 @@
 		        <td>验收</td>
 		        <td>&nbsp;</td>
 		    </tr>
+		</table>
+		<table class="noborder">
+			<tr>
+				<td width=160>开票员：</td>
+				<td width=200>营销部负责人：</td>
+				<td width=160>验收员：</td>
+				<td width=160>保管员：</td>
+				<td align="right">第<%=index+1%>页&nbsp;&nbsp;共<%=result.length%>页</td>
+			</tr>
 		</table>
 		</div>
 

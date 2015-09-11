@@ -12,6 +12,7 @@ global._ = _;
 var parseXlsx = require('excel');
 var SessionStore = require('express-mysql-session');
 
+// app.engine('html', require('ejs').renderFile);
 
 global.pool  = mysql.createPool({
   host     : '127.0.0.1',
@@ -67,6 +68,7 @@ app.use( logger( 'dev' ) );
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( cookieParser( "node" ) );
+app.set("view engine","ejs");
 app.use( session( {
     secret: 'keyboard cat',
     key: 'sid',

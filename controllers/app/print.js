@@ -17,7 +17,7 @@ module.exports = {
                 }
                 console.log(datas);
 
-                res.render('view',{result:datas, username:req.session.username});
+                res.render('view',{result:datas, username:req.session.realname});
             });
             conn.release();
         });

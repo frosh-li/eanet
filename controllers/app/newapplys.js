@@ -12,7 +12,7 @@ module.exports = {
             });
         }
         pool.getConnection(function(err, conn) {
-            conn.query('select count(*) as total from comp_map where status=1 and comp_id_1='+comp_id, function(err, ret){
+            conn.query('select count(*) as total from comp_map where status=0 and comp_id_1='+comp_id, function(err, ret){
                 if(err){
                     return res.json({status: 500, err: err.message});
                 }

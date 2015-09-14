@@ -41,12 +41,12 @@ module.exports = {
         if(req.query.supplie_name){
             var decodeSupplieName = decodeURIComponent(req.query.supplie_name)
             if(sqlCount.indexOf('where') > -1){
-                sqlCount += ' and good_company in (select id from comp_info where comp_info.name like "%'+decodeSupplieName+'%")';
+                sqlCount += ' and good_company in (select id from comp_info where comp_info.name like "%'+decodeSupplieName+'%" or comp_info.pingying like "%'+decodeSupplieName+'%")';
 
             }else{
-                sqlCount += ' where good_company in (select id from comp_info where comp_info.name like "%'+decodeSupplieName+'%")';
+                sqlCount += ' where good_company in (select id from comp_info where comp_info.name like "%'+decodeSupplieName+'%" or comp_info.pingying like "%'+decodeSupplieName+'%")';
             }
-            sqlList += ' and (comp_info.name like "%'+decodeSupplieName+'%")';
+            sqlList += ' and (comp_info.name like "%'+decodeSupplieName+'%" or comp_info.pingying like "%'+decodeSupplieName+'%")';
         }
 
         if(req.query.supplie_id){

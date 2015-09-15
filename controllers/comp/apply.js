@@ -65,15 +65,18 @@ module.exports = {
             var type = 3-companyid.toString().charAt(0);
             var status = req.query.status;
             var sqlCount, sql;
+            var nameFilter = req.query.name ? " name like '%"+decodeURIComponent(req.query.name)+"%' and " : "";
+
             var insql = type == 2 ? 'select comp_id_1 as id from comp_map where comp_id_2='+companyid
                                     :
                                     'select comp_id_2 as id from comp_map where comp_id_1='+companyid;
             if(status == -1){
-                sqlCount = 'select count(*) as total from comp_info where type='+type+' and id not in ('+insql+')';
-                sql= 'select * from comp_info where type='+type+' and id not in ('+insql+') limit '+start+','+limit;
+                var
+                sqlCount = 'select count(*) as total from comp_info where '+nameFilter+' type='+type+' and id not in ('+insql+')';
+                sql= 'select * from comp_info where '+nameFilter+' type='+type+' and id not in ('+insql+') limit '+start+','+limit;
             }else if(status == 0){
                 sqlCount = 'select count(*) as total from comp_info where type='+type+' and id in ('+insql+' and status = 0)';
-                sql = 'select * from comp_info where type='+type+' and id in ('+insql+' and status = 0) limit '+start+','+limit;
+                sql = 'select * from comp_info where  type='+type+' and id in ('+insql+' and status = 0) limit '+start+','+limit;
             }else if(status == 1){
                 sql = 'select * from comp_info where type='+type+' and id in ('+insql+' and status = 1) limit '+start+','+limit;
                 sqlCount = 'select count(*) as total from comp_info where type='+type+' and id in ('+insql+' and status = 1)';

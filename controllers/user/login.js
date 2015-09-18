@@ -7,6 +7,7 @@ module.exports = {
         var username = req.body.username,
             password = md5(req.body.password);
         var ret;
+        var platform = req.body.platform || "web";
         if ( !username || !password ) {
             ret = {
                 status: 500,
@@ -61,7 +62,16 @@ module.exports = {
                     cxMsg : req.session.cxMsg
                 };
                 response.json(ret);
+                var loginquery = 'insert into login_logs(uid, realname, platform) values('+cdata.id+', "'+cdata.realname+'", "'+platform+'")';
+                console.log(loginquery);
+                conn.query(loginquery, function(err){
+                    if(err){
+                        console.log('日志记录失败', err);
+                        return;
+                    }
+                })
             });
+
             conn.release();
         });
     },

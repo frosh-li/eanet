@@ -1,4 +1,5 @@
-var score = 10;
+// var score = 10;
+var fs = require('fs');
 module.exports = {
     router: "/action/",
     post: function( req, res, next ) {
@@ -10,6 +11,9 @@ module.exports = {
                 id:id
             })
         };
+        var score_config = JSON.parse(fs.readFileSync('score.config').toString('utf-8').replace(/[\n\t]/g,''));
+        var score = score_config.remove_score_on_kaihu;
+        console.log('score config', score_config);
         if(req.body.action != 'accept' && req.body.action != 'reject'){
             return res.json({
                 status:500,
@@ -39,6 +43,16 @@ module.exports = {
                     if(err){
                         return res.json({status: 500, err: err.message});
                     }
+                    // 增加药店积分
+                    conn.query('update comp_info set score=score+'+score_config.add_score_on_kaihu+' where id='+id, function(err){
+                        if(err){
+                            console.log(err.message);
+                            return;// res.json({status: 500, err: err.message});
+                        }
+                        return;
+                    });
+
+                    //减药店企业积分
                     conn.query('update comp_info set score=score-'+score+' where id='+req.session.comp_id, function(err){
                         if(err){
                             return res.json({status: 500, err: err.message});

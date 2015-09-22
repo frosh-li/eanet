@@ -37,6 +37,7 @@ module.exports = {
                     {url:'hot_list', val:"新品推荐"},
                     {url:'yd_order_list/1', val:"订单管理"},
                     {url:'originOrder_list', val:"历史订单"},
+                    {url:'noitem_list', val:"缺货清单"},
                     {url:'market_list', val:"药品市场"},
                     {url:'relate_comp_list', val:"供货商名录"},
                     {url:'comp_zizhi_list', val:"资质管理"}

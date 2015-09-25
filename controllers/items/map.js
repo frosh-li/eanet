@@ -99,7 +99,7 @@ module.exports = {
             } );
             return;
         }
-        var sql = 'delete from good_info where id='+code + " and good_company="+req.session.comp_id;
+        var sql = 'delete from good_info where good_id='+code + " and good_company="+req.session.comp_id;
         console.log(sql);
         pool.getConnection(function(err, conn) {
             conn.query(sql, function(err, datas){

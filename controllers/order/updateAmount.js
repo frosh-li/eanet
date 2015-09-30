@@ -15,7 +15,7 @@ module.exports = {
                 oid:oid
             })
         }
-        var sql = 'update orderdetail set good_number='+number+' where oid='+oid;
+        var sql = 'update orderdetail set good_number='+number+', good_amount=good_price*'+number+' where oid='+oid;
 
         console.log(sql);
         pool.getConnection(function(err, conn) {

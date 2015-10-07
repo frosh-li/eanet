@@ -112,14 +112,14 @@ module.exports = {
                         }
                         console.log(JSON.stringify(conf.rows));
                         var result = nodeExcel.execute(conf);
-                        conn.query('update ordermaster set order_status = 6 where order_id="'+code+'"', function(err, u){
-                            if(err){
-                                return res.end('请求数据错误'+err.message);
-                            }
+                        //conn.query('update ordermaster set order_status = 6 where order_id="'+code+'"', function(err, u){
+                        //    if(err){
+                        //        return res.end('请求数据错误'+err.message);
+                        //    }
                             res.setHeader('Content-Type', 'application/vnd.openxmlformats');
                             res.setHeader("Content-Disposition", "attachment; filename=" + code+".xlsx");
                             res.end(result, 'binary');
-                        });
+                        //});
 
                     });
                 });

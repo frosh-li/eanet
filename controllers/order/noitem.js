@@ -8,7 +8,7 @@ module.exports = {
         var page = parseInt(req.query.page) || 1;
         var start = (page-1)*limit;
         var sqlCount = "select count(*) as total from orderdetail where order_id in (select order_id from ordermaster where order_reject = 1 and comp_id="+req.session.comp_id+") and good_missing > 0";
-        var sql = "select * from orderdetail where order_id in (select order_id from ordermaster where order_reject = 1 and comp_id="+req.session.comp_id+") and good_missing > 0";
+        var sql = "select orderdetail.*, ordermaster.supplie_id,comp_info.name from orderdetail,ordermaster,comp_info where orderdetail.order_id=ordermaster.order_id and ordermaster.supplie_id=comp_info.id and orderdetail.order_id in (select order_id from ordermaster where order_reject = 1 and comp_id="+req.session.comp_id+") and good_missing > 0";
         new Promise(function(resolve, reject){
             pool.getConnection(function(err, conn) {
                 if(err){

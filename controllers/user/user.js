@@ -2,17 +2,46 @@ var md5 = require('md5').digest_s;
 module.exports = {
     router: "/user/",
     post: function( req, res, next ) {
-        pool.getConnection(function(err, conn) {
-            console.log('mysql 连接成功');
-            req.body.password = md5(req.body.password);
-            conn.query('insert into user set ?',req.body, function(err, datas){
+        req.body.password = md5(req.body.password);
+        new Promise(function(resolve, reject){
+            pool.getConnection(function(err, con){
                 if(err){
-                    return res.json({status: 500, err: err.message});
+                    return reject(err);
                 }
-                res.json({status: 200, data: datas});
+                resolve(con);
             });
-            conn.release();
+        }).then(function(conn){
+            return new Promise(function(resolve, reject){
+                conn.query('select * from user where username = "'+req.body.username+'"', function(err, datas){
+                    if(err){
+                        return reject(err);
+                    }
+                    if(datas.length > 0){
+                        return reject(new Error('用户名已经存在'));
+                    }
+                    resolve([datas,conn]);
+                });
+            });
+        }).then(function(data){
+            var user=data[0],
+                conn = data[1];
+            return new Promise(function(resolve, reject){
+                 conn.query('insert into user set ?',req.body, function(err, datas){
+                     if(err){
+                         return reject(err);
+                     }
+                     resolve({status: 200, data: datas});
+                 });
+                 conn.release();
+            });
+        }).catch( function(error){
+        //    conn.release();
+            console.log(error);
+            return res.json({status: 500, err: error.message || error});
+        }).then(function(data){
+            return res.json(data);
         });
+
     },
     get: function( req, res, next ) {
         var code = req.params.id;

@@ -31,14 +31,14 @@ module.exports = {
     router: "/rejectItems/",
     post: function( req, res, next ) {
         console.log(req.body);
-        var sql = 'update orderdetail set good_reject={{good_reject}},reject_reason={{reject_reason}} where oid={{oid}}';
+        var sql = 'update orderdetail set good_reject={{good_reject}},reject_reason={{reject_reason}} where oid={{oid}} and good_number >= {{good_reject}}';
         var querys = [];
         var oid = req.body.oid.split("|"),
             good_reject = req.body.good_reject.split("|"),
             reject_reason = req.body.reject_reason.split("|");
         var orderid = req.body.orderid;
         oid.forEach(function(o, index){
-            querys.push(sql.replace('{{good_reject}}', good_reject[index]).replace('{{oid}}', o).replace('{{reject_reason}}', reject_reason[index]));
+            querys.push(sql.replace(/\{\{good_reject\}\}/g, good_reject[index]).replace('{{oid}}', o).replace('{{reject_reason}}', reject_reason[index]));
         });
 
         console.log(querys);
